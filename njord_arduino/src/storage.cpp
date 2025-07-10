@@ -22,7 +22,7 @@ bool GlobalStorage::loadFile(){
 }
 
 bool GlobalStorage::loadJson(JsonDocument doc){
-    if(!doc.containsKey(F("ports"))){
+    if(!doc.containsKey(F("ports")) && !doc.containsKey(F("update_time"))){
       return false;
     }
 
@@ -51,11 +51,7 @@ bool GlobalStorage::loadJson(JsonDocument doc){
         values.push_back(i);
     }
 
-    if (!doc.containsKey(F("update_time"))) {
-        update_time = UPDATE_TIME;
-    } else {
-        update_time = doc[F("update_time")];
-    };
+    update_time = doc[F("update_time")];
     return true;  
 }
 
@@ -130,7 +126,6 @@ bool CommandStorage::setFromJson(JsonDocument doc) {
 }
 
 void CommandStorage::clear() {
-    com.clear();
     com.reserve(0);
     data.clear();
 }

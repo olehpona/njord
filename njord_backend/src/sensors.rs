@@ -1,11 +1,12 @@
 use std::collections::HashMap;
 use std::sync::{Arc};
-
+use serde::{Deserialize, Serialize};
 #[cfg(target_os = "windows")]
 use crate::sensors_providers::lhm_sensor::{LhmSensor, LhmState};
 use crate::sensors_providers::sys_info_sensor::SysInfoSensor;
 use crate::sensors_providers::nvml_sensor::{NvmlSensor, NvmlState};
 
+#[derive(Clone, Serialize, Deserialize, Hash, Eq, PartialEq)]
 pub enum SensorType {
     #[cfg(target_os = "windows")]
     LhmSensor,
@@ -40,8 +41,8 @@ impl SensorFactory {
             SensorType::NvmlSensor => NvmlSensor::get_sensors(sensors_providers_state),
         }
     }
-    pub fn get_all_sensors(sensors_providers_state: &SensorsProvidersStates) -> HashMap<String, HashMap<String, Arc<dyn Sensor>>>{
-        let mut sensors:HashMap<String, HashMap<String, Arc<dyn Sensor>>> = HashMap::new();
+    pub fn get_all_sensors(sensors_providers_state: &SensorsProvidersStates) -> HashMap<SensorType, HashMap<String, Arc<dyn Sensor>>>{
+        let mut sensors = HashMap::new();
 
         {
             let mut nvml_sensors: HashMap<String, Arc<dyn Sensor>> = HashMap::new();
@@ -52,7 +53,7 @@ impl SensorFactory {
                 }
             });
             if !nvml_sensors.is_empty() {
-                sensors.insert("Nvml".to_owned(), nvml_sensors);
+                sensors.insert(SensorType::NvmlSensor, nvml_sensors);
             }
         };
         {
@@ -64,7 +65,7 @@ impl SensorFactory {
                 }
             });
             if !sys_info_sensors.is_empty() {
-                sensors.insert("SysInfo".to_owned(), sys_info_sensors);
+                sensors.insert(SensorType::SysInfoSensor, sys_info_sensors);
             }
         };
         {
@@ -76,15 +77,22 @@ impl SensorFactory {
                 }
             });
             if !lhm_sys_sensors.is_empty() {
-                sensors.insert("Lhm".to_owned(), lhm_sys_sensors);
+                sensors.insert(SensorType::LhmSensor, lhm_sys_sensors);
             }
         };
         sensors
     }
 }
 
+#[derive(Clone,  Serialize, Deserialize)]
+pub struct SensorId{
+    pub sensor_type: SensorType,
+    pub identifier: String
+}
+
 pub trait Sensor: Send + Sync {
     fn get_temperature(&self) -> Result<f32, String>;
+    fn get_sensor_id(&self) -> SensorId ;
 }
 
 pub struct SensorsProvidersStates {

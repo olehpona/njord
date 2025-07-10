@@ -12,6 +12,7 @@
 #define SET_DEFAULT_VALUE_COMMAND F("set_default_value")
 #define SET_UPDATE_TIME_COMMAND F("set_update_time")
 #define BOARD_INFO_COMMAND F("board_info")
+#define PING_COMMAND F("ping")
 
 enum Command {
     SET_VALUE_CMD,
@@ -23,7 +24,8 @@ enum Command {
     LOAD_DEFAULT_CONFIG_CMD,
     SET_DEFAULT_VALUE_CMD,
     SET_UPDATE_TIME_CMD,
-    BOARD_INFO_CMD
+    BOARD_INFO_CMD,
+    PING_CMD
 };
 
 Command stringToCommand(String cmd);

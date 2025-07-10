@@ -18,13 +18,13 @@ import { useEffect, useState } from "react";
 import { PortInfo } from "@/types/api";
 import { BAUD_RATES } from "@/const";
 import { loadDeviceInfoApi, getDevicesListApi, addDevice } from "@/api/device";
-import DeviceSetup from "./device-setup";
-import { useAddDeviceContext } from "@/context/add-device";
+import DeviceSetup from "../device-setup/device-setup";
+import { useDeviceContext } from "@/context/device";
 
 export default function AddDevice() {
-  const addDeviceContext = useAddDeviceContext();
-  const { deviceInfo, serialInfo, deviceConfig } = addDeviceContext.data;
-  const { setDeviceInfo, setSerialInfo } = addDeviceContext.updaters;
+  const deviceContext = useDeviceContext();
+  const { deviceInfo, serialInfo, deviceConfig } = deviceContext.data;
+  const { setDeviceInfo, setSerialInfo, clear } = deviceContext.updaters;
 
   const [devices, setDevices] = useState<PortInfo[]>([]);
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
@@ -38,12 +38,15 @@ export default function AddDevice() {
 
   function changeComPort(value: string) {
     setDeviceInfo({ board_name: "", max_ports: -1 });
-    setSerialInfo({ com_port: value, baud_rate: serialInfo.baud_rate});
+    setSerialInfo({ com_port: value, baud_rate: serialInfo.baud_rate });
   }
 
   function changeBaudPort(value: string) {
     setDeviceInfo({ board_name: "", max_ports: -1 });
-    setSerialInfo({ com_port: serialInfo.com_port, baud_rate: parseInt(value) });
+    setSerialInfo({
+      com_port: serialInfo.com_port,
+      baud_rate: parseInt(value),
+    });
   }
 
   async function getDeviceInfo() {
@@ -53,10 +56,14 @@ export default function AddDevice() {
     info.data ? setDeviceInfo(info.data) : null;
   }
 
-  async function addDeviceHandler(){
-    const response = await addDevice(serialInfo, deviceConfig)
-    response.error? null: setIsSheetOpen(false)
+  async function addDeviceHandler() {
+    const response = await addDevice(serialInfo, deviceConfig);
+    response.error ? null : setIsSheetOpen(false);
   }
+
+  useEffect(() => {
+    if (!isSheetOpen) clear()
+  }, [isSheetOpen])
 
   useEffect(() => {
     getDevicesList();
@@ -77,7 +84,10 @@ export default function AddDevice() {
           <div className="w-full space-y-5 mb-5">
             <div className="w-full space-y-1">
               <div className="w-full flex space-x-2">
-                <Select onValueChange={changeComPort} value={serialInfo.com_port}>
+                <Select
+                  onValueChange={changeComPort}
+                  value={serialInfo.com_port}
+                >
                   <SelectTrigger className="w-[40%]">
                     <SelectValue placeholder="Port" />
                   </SelectTrigger>
@@ -127,7 +137,11 @@ export default function AddDevice() {
             </div>
           </div>
           <DeviceSetup></DeviceSetup>
-          <Button disabled={deviceInfo.max_ports <= 0} onClick={addDeviceHandler} className="w-full">
+          <Button
+            disabled={deviceInfo.max_ports <= 0}
+            onClick={addDeviceHandler}
+            className="w-full"
+          >
             Add
           </Button>
         </div>
@@ -135,4 +149,3 @@ export default function AddDevice() {
     </Sheet>
   );
 }
-

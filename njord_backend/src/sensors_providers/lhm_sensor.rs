@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::sync::{mpsc, Arc};
 use std::thread;
 use wmi::{COMLibrary, Variant, WMIConnection};
-use crate::sensors::{Sensor, SensorsProvidersStates};
+use crate::sensors::{Sensor, SensorId, SensorType, SensorsProvidersStates};
 
 #[cfg(target_os = "windows")]
 pub enum LhmStateQuery {
@@ -120,6 +120,7 @@ impl LhmState {
 
 #[cfg(target_os = "windows")]
 pub struct LhmSensor {
+    sensor_type: SensorType,
     identifier: String,
     lhm_state: Arc<LhmState>,
 }
@@ -128,6 +129,7 @@ pub struct LhmSensor {
 impl LhmSensor{
     pub fn new(sensors_providers_state: &SensorsProvidersStates, identifier: String) -> Result<Arc<Self>, String> {
         Ok(Arc::new(Self {
+            sensor_type: SensorType::LhmSensor,
             identifier,
             lhm_state: sensors_providers_state.lhm_state.clone().ok_or("No lhm state")?.clone(),
         }))
@@ -178,6 +180,13 @@ impl Sensor for LhmSensor {
             }
         } else  {
             Err("Unexpected value".to_string())
+        }
+    }
+
+    fn get_sensor_id(&self) -> SensorId {
+        SensorId {
+            sensor_type: self.sensor_type.clone(),
+            identifier: self.identifier.clone()
         }
     }
 }

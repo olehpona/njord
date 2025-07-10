@@ -1,7 +1,7 @@
 import { SlidersHorizontal } from "lucide-react";
 import { Button } from "./ui/button";
 import AddDevice from "./add-device/add-device";
-import { AddDeviceDataContextProvider } from "@/context/add-device";
+import { DeviceDataContextProvider } from "@/context/device";
 
 export default function NavBar() {
   return (
@@ -9,9 +9,9 @@ export default function NavBar() {
       <Button>
         <SlidersHorizontal />
       </Button>
-      <AddDeviceDataContextProvider>
+      <DeviceDataContextProvider>
         <AddDevice></AddDevice>
-      </AddDeviceDataContextProvider>
+      </DeviceDataContextProvider>
     </nav>
   );
 }

@@ -4,7 +4,7 @@
 
 #define BAUD_RATE 115200
 
-#define DEFAULT_CONFIG F("{\"ports\":[8,3,4,5,6,7,8], \"default_values\":[0,0,0,0,0,0,0]}")
+#define DEFAULT_CONFIG F("{\"ports\":[25], \"default_values\":[100], \"update_time\":120}")
 #define INITIAL_VALUE 0
 
 #define UPDATE_TIME 200

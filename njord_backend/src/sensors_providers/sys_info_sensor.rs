@@ -1,14 +1,16 @@
 use std::sync::Arc;
 use sysinfo::Components;
-use crate::sensors::{Sensor, SensorsProvidersStates};
+use crate::sensors::{Sensor, SensorId, SensorType, SensorsProvidersStates};
 
 pub struct SysInfoSensor {
+    sensor_type: SensorType,
     identifier: String,
 }
 
 impl SysInfoSensor {
     pub fn new(_sensors_providers_state: &SensorsProvidersStates, identifier: String) -> Result<Arc<Self>, String> {
         Ok(Arc::new(Self {
+            sensor_type: SensorType::SysInfoSensor,
             identifier,
         }))
     }
@@ -35,6 +37,12 @@ impl Sensor for SysInfoSensor {
                 }
             },
             _ => Err("Component not found".to_string())
+        }
+    }
+    fn get_sensor_id(&self) -> SensorId {
+        SensorId {
+            sensor_type: self.sensor_type.clone(),
+            identifier: self.identifier.clone()
         }
     }
 }

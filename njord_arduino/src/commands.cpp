@@ -11,5 +11,7 @@ Command stringToCommand(String cmd) {
     if (cmd == LOAD_DEFAULT_CONFIG_COMMAND) return LOAD_DEFAULT_CONFIG_CMD;
     if (cmd == SET_DEFAULT_VALUE_COMMAND) return SET_DEFAULT_VALUE_CMD;
     if (cmd == SET_UPDATE_TIME_COMMAND) return SET_UPDATE_TIME_CMD;
-    return BOARD_INFO_CMD;
+    if (cmd == PING_COMMAND) return PING_CMD;
+    if (cmd == BOARD_INFO_COMMAND) return BOARD_INFO_CMD;
+    return PING_CMD;
 }

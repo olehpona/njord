@@ -1,13 +1,25 @@
 #include <saver.h>
 #include <ArduinoJson.h>
-#include <SPIFFS.h>
+#include <LittleFS.h>
 #include <config.h>
 #include <tuple>
 #include <errors.h>
 #include <messages.h>
 
+void beginStorage(){
+    if (!LittleFS.begin()){
+        sendStringResponse(ERR_CODE, STORAGE_MOUNT_ERR);
+        LittleFS.format();
+        LittleFS.begin();
+    }
+}
+
+void resetStorage(){
+    LittleFS.format();
+}
+
 void dumpData(JsonDocument doc){
-    File file = SPIFFS.open(STORAGE_FILE, "w");
+    File file = LittleFS.open(STORAGE_FILE, "w");
     serializeMsgPack(doc, file);
     file.close();
 }
@@ -16,7 +28,7 @@ std::tuple<bool, JsonDocument> loadData(){
     bool status;
     JsonDocument doc;
 
-    File storage = SPIFFS.open(STORAGE_FILE, "r");
+    File storage = LittleFS.open(STORAGE_FILE, "r");
     DeserializationError err = deserializeMsgPack(doc, storage);
     storage.close();
     if(err.code() == DeserializationError::Ok) {
@@ -26,9 +38,9 @@ std::tuple<bool, JsonDocument> loadData(){
 }
 
 void loadStorage(){
-    if (!SPIFFS.exists(STORAGE_FILE) || !data.loadFile()) {
-        Serial.println(CONFIG_LOAD_ERROR);
+    if (!LittleFS.exists(STORAGE_FILE) || !data.loadFile()) {
+        sendStringResponse(ERR_CODE, CONFIG_LOAD_ERROR);
         data.loadDefault();
-        Serial.println(LOAD_DEFAULT_CONFIG_MSG);
+        sendStringResponse(OK_CODE, LOAD_DEFAULT_CONFIG_MSG);
     }
 }

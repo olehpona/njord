@@ -11,48 +11,45 @@ import { Input } from "../ui/input";
 import { Trash } from "lucide-react";
 import { PlugSetting } from "@/types/device";
 import { DEFAULT_PLUG_VALUE } from "@/const";
-import { useAddDeviceContext } from "@/context/add-device";
-import { deviceConfigToPlugSetting, plugSettingToDeviceConfig } from "@/utils/api";
-
+import { useDeviceContext } from "@/context/device";
+import {
+  deviceConfigToPlugSetting,
+  plugSettingToDeviceConfig,
+} from "@/utils/api";
 
 export default function SetupPlugs() {
-  const addDeviceContext = useAddDeviceContext()
-  const {deviceInfo, deviceConfig} = addDeviceContext.data;
-  const {setDeviceConfig} = addDeviceContext.updaters;
-  const [plugs, setPlugs] = useState<PlugSetting[]>([])
+  const addDeviceContext = useDeviceContext();
+  const { deviceInfo, deviceConfig } = addDeviceContext.data;
+  const { setDeviceConfig } = addDeviceContext.updaters;
+  const [plugs, setPlugs] = useState<PlugSetting[]>([]);
 
   useEffect(() => {
-    setPlugs(deviceConfigToPlugSetting(deviceConfig))
-  }, [deviceConfig])
+    setPlugs(deviceConfigToPlugSetting(deviceConfig));
+  }, [deviceConfig]);
 
-
-
-  function addPlug(){
-    if (plugs.length < deviceInfo.max_ports){
+  function addPlug() {
+    if (plugs.length < deviceInfo.max_ports) {
       let newPlugs = [...plugs];
-      newPlugs.push({port: 0, default_value: DEFAULT_PLUG_VALUE});
-      setPlugs(newPlugs);
-      setDeviceConfig(plugSettingToDeviceConfig(deviceConfig, plugs))
+      newPlugs.push({ port: 0, default_value: DEFAULT_PLUG_VALUE });
+      setDeviceConfig(plugSettingToDeviceConfig(deviceConfig, newPlugs));
     }
   }
 
-  function handleChangePlug(index: number, value: number){
-    let newPlugs = [...plugs]
-    newPlugs[index].port = value
-    setPlugs(newPlugs)
-    setDeviceConfig(plugSettingToDeviceConfig(deviceConfig, plugs))
+  function handleChangePlug(index: number, value: number) {
+    let newPlugs = [...plugs];
+    newPlugs[index].port = value;
+    setDeviceConfig(plugSettingToDeviceConfig(deviceConfig, newPlugs));
   }
-    function handleChangeDefault(index: number, value: number) {
-      let newPlugs = [...plugs];
-      newPlugs[index].default_value = value
-      setPlugs(newPlugs);
-      setDeviceConfig(plugSettingToDeviceConfig(deviceConfig, plugs));
-    }
-
-  function handlePlugDelete(elIndex: number){
-    setPlugs(plugs.filter((_el, index) => index !== elIndex));
+  function handleChangeDefault(index: number, value: number) {
+    let newPlugs = [...plugs];
+    newPlugs[index].default_value = value;
+    setDeviceConfig(plugSettingToDeviceConfig(deviceConfig, newPlugs));
   }
 
+  function handlePlugDelete(elIndex: number) {
+    let newPlugs = plugs.filter((_el, index) => index !== elIndex);
+    setDeviceConfig(plugSettingToDeviceConfig(deviceConfig, newPlugs));
+  }
   return (
     <div className="space-y-2 m-4">
       <div className="w-full">

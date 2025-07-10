@@ -1,11 +1,7 @@
 #include <Arduino.h>
-#include <ArduinoJson.h>
-#include <config.h>
 #include <storage.hpp>
-#include <errors.h>
 #include <commandsHandlers.h>
 #include <board.h>
-#include <SPIFFS.h>
 #include <messages.h>
 #include <saver.h>
 
@@ -20,19 +16,6 @@ void setup() {
   setupOutputs();
 }
 
-void readCommandFromSerial() {
-  if (Serial.available()) {
-    String readed = Serial.readStringUntil('\n');
-    JsonDocument doc;
-    deserializeJson(doc, readed);
-    if(!command.setFromJson(doc)){
-      Serial.println(generateStringResponse(ERR_CODE, BAD_JSON_ERROR));
-      return;
-    };
-    newCommand = true;
-  }
-}
-
 void loop() {
   writeOutputs();
   readCommandFromSerial();
@@ -41,4 +24,5 @@ void loop() {
     handleCommand();
     command.clear();
   }
+  boardLoop();
 }

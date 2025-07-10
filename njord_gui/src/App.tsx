@@ -1,8 +1,8 @@
 import { toast, Toaster } from "sonner";
 import NavBar from "./components/navbar";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { listen } from "@tauri-apps/api/event";
-import { get_core_messages } from "./api/core";
+import {get_core_messages, load_settings} from "./api/core";
 import { CoreMessage, Device } from "./types/api";
 import CoreMessageCard from "./components/core-message-card";
 import { useDeviceStore } from "./store/device";
@@ -15,6 +15,7 @@ interface DeviceUpdateResponse {
 function App() {
   const [coreMessages, setCoreMessages] = useState<CoreMessage[]>([]);
   const { setDevices } = useDeviceStore();
+  const hasLoadedSettings = useRef(false);
 
   let coreMessageHandler = async () => {
     let messages = await get_core_messages();
@@ -35,6 +36,10 @@ function App() {
         }))
       )
     );
+    if (!hasLoadedSettings.current) {
+      load_settings();
+      hasLoadedSettings.current = true;
+    }
     coreMessageHandler();
   }, []);
 

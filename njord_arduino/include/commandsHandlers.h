@@ -15,5 +15,6 @@ void loadDefaultConfigHandler();
 void setDefaultValueHandler();
 void setUpdateTimeHandler();
 void boardInfoHandler();
+void pingHandler();
 
 void handleCommand();

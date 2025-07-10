@@ -1,0 +1,1 @@
+export type SensorsData = Record<string, string[]>
