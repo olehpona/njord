@@ -1,6 +1,6 @@
 # njord
 ## Welcome
-Njord project is a project that is here to add posibility to manage some of pc coolers that can't be managed from os. Firstly it is target for non pwm fans or for pwm fans that doesn't supported by hardware.
+Njord ( Njörðr is a Norse god of the wind, sea, and wealth ) project is a project that is here to add posibility to manage some of pc coolers that can't be managed from os. Firstly it is target for non pwm fans or for pwm fans that doesn't supported by hardware.
 This project is trying to make this possible by creating a hardware (in my case based on rp2040 ( previously on esp32-c3 ) ) and software to get all termal info and set the fan speed based on it.
 ## Parts
 * Njord-arduino - this is Arduino firmware for rp2040 controller that is not just implementing some standart logic but also trying to expose some board based stuff to make it possible for porting to different devices
