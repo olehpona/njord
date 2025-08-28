@@ -12,4 +12,4 @@ Firstly you will need some controller that will run hardware part of njord, buil
 Secondly you can chose one of ui (for today it is only gui) and install it. Don't worry about njord-backend because it is just part of ui.
 Have fun.
 ## My opinion
-This project is maded for fun and to solve my problems, and i don't really belive that some one will find this usefull. But if you would like to help me teach something new about rust or arduino I will be happy to take your advice
+This project is maded for fun and to solve my problems (At that point, I can say that it may be discontinued because the problem it was meant to solve has disappeared.), and i don't really belive that some one will find this usefull.
